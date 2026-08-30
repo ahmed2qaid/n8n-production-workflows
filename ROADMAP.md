@@ -2,37 +2,34 @@
 
 ## v0.1 — Quality contract and validator
 
-- [x] Repository structure and project positioning
-- [x] Production-readiness manifest design
-- [x] Static workflow validator
-- [x] Secret-pattern checks
-- [x] Reference workflow package
-- [x] Unit tests and CI
+- [x] Repository structure and production-readiness manifest
+- [x] static workflow validator and secret-pattern checks
+- [x] reference workflow package, tests and CI
 
 ## v0.2 — Semantic n8n analysis
 
 - [x] node-type risk classification
-- [x] credential-reference validation
-- [x] webhook authentication checks
-- [x] documented public-webhook exception
-- [x] destructive action detection
-- [x] destructive/write SQL detection
-- [x] HTTP side-effect and retry inspection
-- [x] high-risk error/idempotency review
-- [x] n8n version compatibility metadata
-- [x] richer per-node risk score and severity levels
-- [x] semantic analyzer tests
+- [x] credential and webhook security checks
+- [x] destructive SQL/HTTP/action detection
+- [x] retry, idempotency and error-path inspection
+- [x] per-node production/security score
 
-Exit criteria: CI can fail a workflow for security/production semantics even when its JSON structure is valid.
+## v0.3 — Deterministic test harness
 
-## v0.3 — Test harness
+- [x] fixture-driven workflow tests
+- [x] mock outputs for HTTP/API/code/unsupported nodes
+- [x] deterministic graph runner for a safe built-in node subset
+- [x] Set/Edit Fields expression evaluation for common `$json` paths and fallbacks
+- [x] Respond to Webhook output rendering
+- [x] exact expected final-output assertions
+- [x] per-node execution snapshots
+- [x] regression snapshot comparison
+- [x] `--update-snapshots` workflow
+- [x] CLI report in text, JSON and Markdown
+- [x] CI gate on deterministic workflow snapshots
+- [x] first executable reference fixture and snapshot
 
-- fixture-driven workflow tests
-- mock HTTP/API responses
-- deterministic test mode
-- expected node outputs
-- regression snapshots
-- CLI report in JSON and Markdown
+Exit criteria: a workflow package can fail CI because its deterministic behavior or execution path changed even when its exported n8n JSON remains syntactically valid.
 
 ## v0.4 — Production hardening
 
@@ -53,4 +50,4 @@ Exit criteria: CI can fail a workflow for security/production semantics even whe
 
 ## Non-goals
 
-This project will not compete on raw workflow count. A workflow should not enter the catalog unless it has test fixtures, operational metadata, and a clear production-readiness story.
+This project will not compete on raw workflow count. The deterministic harness also does not attempt to reimplement the full n8n runtime: arbitrary/external nodes must be mocked unless explicitly supported.
