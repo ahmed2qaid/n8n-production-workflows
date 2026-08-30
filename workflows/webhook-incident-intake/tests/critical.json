@@ -1,0 +1,14 @@
+{
+  "name": "accept-critical-incident",
+  "input": {
+    "body": {
+      "incident_id": "INC-100",
+      "severity": "critical"
+    }
+  },
+  "mocks": {},
+  "expected": {
+    "accepted": true,
+    "incident_id": "INC-100"
+  }
+}
