@@ -1,0 +1,28 @@
+{
+  "case": "accept-critical-incident",
+  "final": {
+    "accepted": true,
+    "incident_id": "INC-100"
+  },
+  "node_outputs": {
+    "Acknowledge": {
+      "accepted": true,
+      "incident_id": "INC-100"
+    },
+    "Incident Webhook": {
+      "body": {
+        "incident_id": "INC-100",
+        "severity": "critical"
+      }
+    },
+    "Normalize Incident": {
+      "incident_id": "INC-100",
+      "severity": "critical"
+    }
+  },
+  "path": [
+    "Incident Webhook",
+    "Normalize Incident",
+    "Acknowledge"
+  ]
+}
