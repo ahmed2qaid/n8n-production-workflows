@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "n8n-production-workflows"
-version = "0.1.0"
-description = "Production-readiness validator and curated workflow contract for n8n"
+version = "0.3.0"
+description = "Production-readiness analysis, deterministic fixtures, mocks, and regression snapshots for n8n workflows"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 
