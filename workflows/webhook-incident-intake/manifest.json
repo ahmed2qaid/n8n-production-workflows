@@ -1,0 +1,12 @@
+{
+  "name": "Webhook Incident Intake",
+  "description": "Accept an incident payload, normalize fields, and return an acknowledgement.",
+  "credentials": [],
+  "side_effects": false,
+  "retries": "No external calls in the reference workflow; add exponential backoff when integrations are introduced.",
+  "error_handling": "Webhook validation failures return a controlled response; production variants should attach an error workflow.",
+  "idempotency": "Reference workflow is side-effect free. Production variants must derive an idempotency key from incident_id.",
+  "observability": "Track execution id, incident id, duration, and failure count.",
+  "tested_with": "n8n 1.x",
+  "risk": "low"
+}
