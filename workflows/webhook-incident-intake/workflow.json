@@ -1,0 +1,69 @@
+{
+  "name": "Webhook Incident Intake",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "incident-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-incident-intake",
+      "name": "Incident Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "incident-id",
+              "name": "incident_id",
+              "value": "={{ $json.body.incident_id }}",
+              "type": "string"
+            },
+            {
+              "id": "severity",
+              "name": "severity",
+              "value": "={{ $json.body.severity || 'unknown' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "normalize-incident",
+      "name": "Normalize Incident",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"accepted\":true,\"incident_id\":\"{{ $json.incident_id }}\"}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [480, 0]
+    }
+  ],
+  "connections": {
+    "Incident Webhook": {
+      "main": [[{"node": "Normalize Incident", "type": "main", "index": 0}]]
+    },
+    "Normalize Incident": {
+      "main": [[{"node": "Acknowledge", "type": "main", "index": 0}]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "reference-v0-1"
+}
