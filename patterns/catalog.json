@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "patterns": {
+    "idempotent-side-effect": {
+      "purpose": "Prevent duplicate external writes when n8n retries or receives duplicate events.",
+      "required_controls": [
+        "derive a stable idempotency key from the business event",
+        "persist/check the key before the side effect",
+        "send the key to upstream APIs when they support idempotency headers",
+        "record the external resource ID after success"
+      ]
+    },
+    "rate-limit-backoff": {
+      "purpose": "Bound retries for transient API failures and rate limits.",
+      "recommended_node_settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      },
+      "required_controls": [
+        "respect Retry-After when available",
+        "cap retry attempts",
+        "route terminal failures to the error/dead-letter workflow"
+      ]
+    },
+    "human-approval": {
+      "purpose": "Keep destructive or externally visible actions behind an explicit human decision.",
+      "required_controls": [
+        "persist the proposed action and exact arguments",
+        "wait for an authenticated approval event",
+        "bind approval to the original action/arguments",
+        "expire stale approvals",
+        "audit approver, timestamp, and final execution ID"
+      ]
+    },
+    "dead-letter-error-workflow": {
+      "purpose": "Make terminal automation failures operator-visible and replayable.",
+      "required_controls": [
+        "attach a workflow-level error workflow",
+        "capture workflow/execution/node/error metadata",
+        "redact credentials and sensitive payload fields",
+        "persist a replay reference or business event ID",
+        "alert only after retry policy is exhausted"
+      ]
+    },
+    "verified-webhook": {
+      "purpose": "Protect public automation entry points.",
+      "required_controls": [
+        "authenticate, verify a signature, or validate a shared secret",
+        "apply request size and rate limits",
+        "validate required payload fields before side effects",
+        "derive a duplicate/idempotency key"
+      ]
+    },
+    "observability": {
+      "purpose": "Make workflow behavior diagnosable in production.",
+      "required_controls": [
+        "record n8n execution ID",
+        "record business correlation/idempotency ID",
+        "measure external call latency and failures",
+        "capture side-effect resource IDs",
+        "link terminal failures to the dead-letter record"
+      ]
+    },
+    "sandboxed-code": {
+      "purpose": "Reduce the blast radius of Code/Function nodes.",
+      "required_controls": [
+        "minimize secrets exposed to the node",
+        "validate untrusted inputs",
+        "avoid arbitrary outbound destinations",
+        "prefer dedicated integration nodes for high-risk side effects"
+      ]
+    }
+  }
+}
