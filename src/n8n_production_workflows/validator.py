@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Iterable
 
 _SECRET_RE = re.compile(
-    r"(?i)(api[_-]?key|secret|token|password)\s*[:=]\s*['\"]?[A-Za-z0-9_\-]{12,}"
+    r"(?i)[\"']?(api[_-]?key|secret|token|password)[\"']?\s*[:=]\s*[\"']?[A-Za-z0-9_\-]{12,}"
 )
 
 
