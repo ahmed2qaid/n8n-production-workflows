@@ -33,12 +33,17 @@ Exit criteria: a workflow package can fail CI because its deterministic behavior
 
 ## v0.4 — Production hardening
 
-- idempotency recipes
-- dead-letter patterns
-- rate-limit backoff templates
-- human-approval patterns
-- reusable error-handling subworkflows
-- observability integration examples
+- [x] machine-readable idempotency recipe
+- [x] dead-letter/error-workflow pattern
+- [x] bounded retry/backoff defaults for mutating HTTP nodes
+- [x] human-approval boundary pattern for destructive actions
+- [x] webhook verification and Code-node containment recipes
+- [x] observability/correlation pattern
+- [x] hardening planner with production readiness score
+- [x] safe auto-fixer that never auto-wires destructive/approval branches
+- [x] `n8n-workflow-check harden` text/JSON/Markdown CLI with optional hardened export
+
+Exit criteria: maintainers receive a concrete production hardening plan for risky workflows, can apply semantics-preserving retry defaults automatically, and have reusable machine-readable patterns for the controls that require domain-specific wiring.
 
 ## v1.0 — Curated production catalog
 
