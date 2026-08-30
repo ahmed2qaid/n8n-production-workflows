@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "n8n-production-workflows"
+version = "0.1.0"
+description = "Production-readiness validator and curated workflow contract for n8n"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+n8n-workflow-check = "n8n_production_workflows.__main__:main"
