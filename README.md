@@ -1,62 +1,65 @@
 # n8n Production Workflows
 
-Production-grade n8n automation blueprints with tests, safety metadata, failure handling expectations, and a machine-readable quality gate.
+A curated n8n automation catalog that competes on **production readiness, not workflow count**.
 
-> Not more workflows. Better workflows.
+Every workflow package is checked for operational metadata and semantically analyzed at node level before it is accepted by CI.
 
-## Why this exists
+## v0.2 — semantic workflow risk analysis
 
-Most workflow collections optimize for quantity. This repository optimizes for deployability: every published workflow should document inputs, credentials, side effects, retries, idempotency, observability, and test fixtures.
+The CLI now understands common n8n risk patterns instead of checking JSON shape only:
 
-## v0.1 scope
+- unauthenticated Webhook nodes
+- explicitly documented public webhook exceptions
+- mutating and destructive HTTP methods
+- destructive database operations and SQL
+- Code/Function nodes
+- credential reference integrity
+- manifest credential declarations
+- external HTTP retry flags
+- high-risk workflow error/idempotency requirements
+- n8n `tested_with` compatibility metadata
+- per-node `low / medium / high / critical` risk with a node score
 
-- A manifest contract for production-readiness metadata.
-- A zero-dependency Python validator and CLI.
-- A reference workflow package with test fixtures.
-- CI that rejects malformed workflow packages.
-- A scoring model that makes missing production controls visible.
+```bash
+pip install -e .
+n8n-workflow-check validate workflows
+```
 
-## Target package layout
+Example output:
+
+```text
+PASS webhook-incident-intake: 96/100
+  [NODE MEDIUM  ] Incident Webhook (...) score=15: public unauthenticated webhook
+  [WARNING] webhook.public: Incident Webhook: public webhook is explicitly documented...
+```
+
+A destructive workflow can fail CI:
+
+```text
+FAIL customer-delete: 55/100
+  [NODE CRITICAL] Delete Customer (...) score=45: destructive node operation
+  [ERROR] node.destructive_operation: Delete Customer: destructive operation detected: delete
+```
+
+## Workflow package contract
 
 ```text
 workflows/<workflow-name>/
 ├── workflow.json
 ├── manifest.json
-├── fixtures/
-│   ├── input.json
-│   └── expected.json
 └── README.md
 ```
 
-## Quick start
+The manifest documents credentials, side effects, retries, error handling, idempotency, observability, n8n compatibility, and any deliberate public webhook exposure.
 
-```bash
-PYTHONPATH=src python -m n8n_production_workflows validate workflows
-python -m unittest discover -s tests
-```
+## Why this is different
 
-## Production-readiness checks
+Large template repositories optimize for the number of importable JSON files. This repository's direction is closer to a production automation review system: a workflow earns its place only when its operational risks are visible and testable.
 
-The initial validator checks for:
-
-- valid n8n workflow structure (`nodes` and `connections`)
-- manifest/workflow identity consistency
-- declared credentials and side effects
-- retry and error-path declarations
-- idempotency expectations
-- observability/alerting expectations
-- suspicious inline secret-like values
-
-The score is advisory in v0.1. Future releases will add node-level semantic rules, n8n version compatibility checks, synthetic execution, and regression fixtures.
-
-## Roadmap
+Next, v0.3 will add fixture-driven execution tests, mocks, expected outputs, and regression snapshots.
 
 See [ROADMAP.md](ROADMAP.md).
 
-## Status
-
-Early development — v0.1 foundation.
-
 ## License
 
-MIT. Imported third-party workflows, when added, must preserve their original attribution and compatible license notices.
+MIT.

@@ -6,8 +6,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
 
+from .analyzer import NodeRisk, analyze_workflow
+
 _SECRET_RE = re.compile(
-    r"(?i)[\"']?(api[_-]?key|secret|token|password)[\"']?\s*[:=]\s*[\"']?[A-Za-z0-9_\-]{12,}"
+    r'''(?ix)
+    ["']?(api[_-]?key|secret|token|password)["']?
+    \s*[:=]\s*
+    ["']?[A-Za-z0-9_\-]{12,}
+    '''
 )
 
 
@@ -22,6 +28,7 @@ class ValidationIssue:
 class ValidationReport:
     package: str
     issues: list[ValidationIssue] = field(default_factory=list)
+    node_risks: list[NodeRisk] = field(default_factory=list)
     score: int = 100
 
     @property
@@ -87,12 +94,7 @@ def validate_package(package_dir: Path) -> ValidationReport:
 
     workflow_name = workflow.get("name")
     if workflow_name and manifest.get("name") and workflow_name != manifest.get("name"):
-        report.add(
-            "warning",
-            "identity.name_mismatch",
-            "manifest name does not match workflow name",
-            5,
-        )
+        report.add("warning", "identity.name_mismatch", "manifest name does not match workflow name", 5)
 
     controls = {
         "retries": 8,
@@ -103,29 +105,21 @@ def validate_package(package_dir: Path) -> ValidationReport:
     for key, penalty in controls.items():
         value = manifest.get(key)
         if value in (False, None, "", [], {}):
-            report.add(
-                "warning",
-                f"control.{key}",
-                f"production control '{key}' is not declared",
-                penalty,
-            )
+            report.add("warning", f"control.{key}", f"production control '{key}' is not declared", penalty)
 
     if manifest.get("side_effects") and manifest.get("idempotency") in (False, None, ""):
-        report.add(
-            "error",
-            "side_effect.idempotency",
-            "workflow declares side effects but no idempotency strategy",
-            15,
-        )
+        report.add("error", "side_effect.idempotency", "workflow declares side effects but no idempotency strategy", 15)
 
     raw = (package_dir / "workflow.json").read_text(encoding="utf-8")
     if _SECRET_RE.search(raw):
-        report.add(
-            "error",
-            "security.inline_secret",
-            "workflow appears to contain an inline secret-like value",
-            35,
-        )
+        report.add("error", "security.inline_secret", "workflow appears to contain an inline secret-like value", 35)
+
+    if isinstance(nodes, list):
+        node_risks, semantic_findings = analyze_workflow(workflow, manifest)
+        report.node_risks = node_risks
+        for finding in semantic_findings:
+            prefix = f"{finding.node}: " if finding.node else ""
+            report.add(finding.severity, finding.code, prefix + finding.message, finding.penalty)
 
     return report
 

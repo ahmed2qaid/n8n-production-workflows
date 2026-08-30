@@ -21,6 +21,10 @@ def main() -> int:
     for report in reports:
         state = "PASS" if report.ok else "FAIL"
         print(f"{state} {report.package}: {report.score}/100")
+        for risk in report.node_risks:
+            if risk.risk != "low":
+                details = "; ".join(risk.findings) or "risk heuristic"
+                print(f"  [NODE {risk.risk.upper():8}] {risk.node} ({risk.node_type}) score={risk.score}: {details}")
         for issue in report.issues:
             print(f"  [{issue.severity.upper()}] {issue.code}: {issue.message}")
         failed = failed or not report.ok

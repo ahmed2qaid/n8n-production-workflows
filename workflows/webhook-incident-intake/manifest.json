@@ -8,5 +8,7 @@
   "idempotency": "Reference workflow is side-effect free. Production variants must derive an idempotency key from incident_id.",
   "observability": "Track execution id, incident id, duration, and failure count.",
   "tested_with": "n8n 1.x",
-  "risk": "low"
+  "risk": "medium",
+  "public_webhook": true,
+  "webhook_security": "This teaching/reference webhook is intentionally public. Production deployments must validate a signed sender token or place authenticated ingress/rate limiting in front of n8n."
 }

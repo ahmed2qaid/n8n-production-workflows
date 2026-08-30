@@ -2,8 +2,6 @@
 
 ## v0.1 — Quality contract and validator
 
-Goal: establish a strict package format so every workflow is testable and reviewable.
-
 - [x] Repository structure and project positioning
 - [x] Production-readiness manifest design
 - [x] Static workflow validator
@@ -11,17 +9,21 @@ Goal: establish a strict package format so every workflow is testable and review
 - [x] Reference workflow package
 - [x] Unit tests and CI
 
-Exit criteria: CI can scan the repository and fail on malformed workflow packages.
-
 ## v0.2 — Semantic n8n analysis
 
-- node-type risk classification
-- credential-reference validation
-- webhook authentication checks
-- destructive action detection
-- retry/error workflow inspection
-- n8n version compatibility metadata
-- richer quality score with severity levels
+- [x] node-type risk classification
+- [x] credential-reference validation
+- [x] webhook authentication checks
+- [x] documented public-webhook exception
+- [x] destructive action detection
+- [x] destructive/write SQL detection
+- [x] HTTP side-effect and retry inspection
+- [x] high-risk error/idempotency review
+- [x] n8n version compatibility metadata
+- [x] richer per-node risk score and severity levels
+- [x] semantic analyzer tests
+
+Exit criteria: CI can fail a workflow for security/production semantics even when its JSON structure is valid.
 
 ## v0.3 — Test harness
 
